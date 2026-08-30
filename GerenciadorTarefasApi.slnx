@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GerenciadorTarefasApi/GerenciadorTarefasApi.csproj" />
+  <Project Path="GerenciadorTarefasCore/GerenciadorTarefasCore.csproj" />
+</Solution>
