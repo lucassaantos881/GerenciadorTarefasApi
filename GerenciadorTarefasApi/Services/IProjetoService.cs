@@ -5,11 +5,11 @@ namespace GerenciadorTarefasApi.Services
     public interface IProjetoService
     {
 
-        void AdicionarProjeto(Projeto projeto);
-        void AtualizarProjeto(int id, Projeto projeto);
-        IEnumerable<Projeto> ObterTodosProjetos();
-        Projeto ObterProjetoPorId(int id);
-        void DeletarProjeto(int id);
+        Task AdicionarProjetoAsync(Projeto projeto);
+        Task AtualizarProjetoAsync(int id, Projeto projeto);
+        Task<IEnumerable<Projeto>> ObterTodosProjetosAsync();
+        Task<Projeto> ObterProjetoPorIdAsync(int id);
+        Task DeletarProjetoAsync(int id);
         
        
 

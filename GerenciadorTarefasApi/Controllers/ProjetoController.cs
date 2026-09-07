@@ -19,7 +19,7 @@ namespace GerenciadorTarefasApi.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] Projeto projeto)
+        public async Task<ActionResult> Post([FromBody] Projeto projeto)
         {
 
             if (projeto == null)
@@ -28,14 +28,14 @@ namespace GerenciadorTarefasApi.Controllers
 
             }
 
-            _projetoService.AdicionarProjeto(projeto);
+            await _projetoService.AdicionarProjetoAsync(projeto);
             return CreatedAtAction(nameof(Post), new { id = projeto.ProjetoId }, projeto);
 
 
         }
 
         [HttpPut("atualizar-projeto/{id}")]
-        public ActionResult Put(int id, Projeto projeto)
+        public async Task<ActionResult> Put(int id, Projeto projeto)
         {
            
             if (projeto == null || projeto.ProjetoId != id)
@@ -43,14 +43,15 @@ namespace GerenciadorTarefasApi.Controllers
                     return BadRequest("O projeto não pode ser nulo e o ID deve corresponder.");
             }
 
-           _projetoService.AtualizarProjeto(id, projeto);
+           await _projetoService.AtualizarProjetoAsync(id, projeto);
            return NoContent();
 
          
         }
 
+        
         [HttpDelete("excluir-projeto/{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             
              if (id < 0)
@@ -58,29 +59,29 @@ namespace GerenciadorTarefasApi.Controllers
                 return BadRequest();
              }
 
-             _projetoService.DeletarProjeto(id);
+             await _projetoService.DeletarProjetoAsync(id);
              return NoContent();
  
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Projeto>> GetProjetos()
+        public async Task<ActionResult<IEnumerable<Projeto>>> GetProjetos()
         {
-            var projetos = _projetoService.ObterTodosProjetos().ToList();
+            var projetos = await _projetoService.ObterTodosProjetosAsync();
 
-            if (projetos.Count == 0)
+            if(projetos == null)
             {
                 return NotFound("Projetos não encontrados");
-
             }
 
             return Ok(projetos);
         }
 
+        
         [HttpGet("obter-projeto/{id}")]
-        public ActionResult<Projeto> GetProjetoPorId(int id)
+        public async Task <ActionResult<Projeto>> GetProjetoPorId(int id)
         {
-            var projeto = _projetoService.ObterProjetoPorId(id);
+            var projeto = await _projetoService.ObterProjetoPorIdAsync(id);
 
             if (projeto == null)
             {

@@ -8,20 +8,27 @@ using System.Text.Json.Serialization;
 
 namespace GerenciadorTarefasCore.Models
 {
-    public class Projeto
+    public class Projeto : IValidatableObject
     {
 
-        public Projeto()
+        
+        public Projeto(string nome, string descricao, DateTime dataCriacao, DateTime dataConclusao)
         {
-            Tarefas = new Collection<Tarefa>();
-        }
+            if (string.IsNullOrWhiteSpace(nome))
+            {
+                throw new ArgumentNullException(nameof(nome), "O nome do projeto é obrigatório.");
+            }
 
-        public Projeto(string nome, string descricao, DateTime dataPrazo, Tarefa tarefa)
-        {
+            if (string.IsNullOrWhiteSpace(descricao))
+            {
+                throw new ArgumentNullException(nameof(descricao), "A descrição do projeto é obrigatória.");
+            }
+
             Nome = nome;
             Descricao = descricao;
-            DataConclusao = dataPrazo;
-
+            DataCriacao = dataCriacao;
+            DataConclusao = dataConclusao;
+            Tarefas = new Collection<Tarefa>();
         }
 
         public int ProjetoId { get; set; }
@@ -39,6 +46,16 @@ namespace GerenciadorTarefasCore.Models
 
         [JsonIgnore]
         public ICollection<Tarefa>? Tarefas { get; set; }
+
         
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (DataConclusao < DataCriacao)
+            {
+                yield return new ValidationResult("A data de conclusão não pode ser anterior à data de criação do projeto.", new[] { nameof(DataConclusao)});
+            }
+        }
+
     }
 }

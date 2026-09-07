@@ -14,31 +14,20 @@ namespace GerenciadorTarefasApi.Services
             _context = context;
         }
 
-        public void AdicionarUsuario(Usuario usuario)
+        public async Task AdicionarUsuarioAsync(Usuario usuario)
         {
-            try
-            {
                 if (usuario == null)
                 {
                     throw new ArgumentNullException("O usuário não pode ser nulo.");
                 }
 
                 _context.Add(usuario);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
-            }
-
-
+                await _context.SaveChangesAsync();
+       
         }
 
-        public void AtualizarUsuario(int id, Usuario usuario)
+        public async Task AtualizarUsuarioAsync(int id, Usuario usuario)
         {
-            try
-            {
 
                 if(id < 0)
                 {
@@ -49,7 +38,7 @@ namespace GerenciadorTarefasApi.Services
 
                 if(usuarioExistente == null)
                 {
-                    throw new KeyNotFoundException("O usuário não foi encontrado.");
+                   throw new KeyNotFoundException($"Usuário com ID {id} não encontrado para atualizar.");
                 }
                 else
                 {
@@ -57,20 +46,15 @@ namespace GerenciadorTarefasApi.Services
                     usuarioExistente.Email = usuario.Email;
 
                     _context.Update(usuarioExistente);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-            }
+            
+           
         }
 
-        public void DeletarUsuario(int id)
+        public async Task DeletarUsuarioAsync(int id)
         {
-            try
-            {
                 if (id < 0)
                 {
                     throw new ArgumentOutOfRangeException("O ID do usuário deve ser um valor positivo.");
@@ -80,43 +64,45 @@ namespace GerenciadorTarefasApi.Services
 
                 if (usuarioExistente == null)
                 {
-                    throw new KeyNotFoundException("O usuário não foi encontrado.");
+                    throw new KeyNotFoundException($"Usuário com ID {id} não encontrado para deletar.");
                 }
                 else
                 {
                     _context.Remove(usuarioExistente);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-            }
         }
 
-        public IEnumerable<Usuario> ObterTodosUsuarios()
+        public async Task<IEnumerable<Usuario>> ObterTodosUsuariosAsync()
         {
            
            //AsNoTracking() é usado para melhorar o desempenho em consultas de leitura, pois não rastreia as alterações nos objetos retornados.
            //Take(5) é usado para limitar o número de registros retornados para 5.
 
-           var usuarios = _context.Usuarios?.AsNoTracking().Take(5).ToList(); 
+           var usuarios = await _context.Usuarios.AsNoTracking().Take(5).ToListAsync(); 
 
            return usuarios;
 
         }
 
-        public Usuario ObterUsuarioPorId(int id)
+        public async Task<Usuario> ObterUsuarioPorIdAsync(int id)
         {
             if (id < 0)
             {
                 throw new ArgumentOutOfRangeException("O ID do usuário deve ser um valor positivo.");
             }
 
-            var usuarioLocalizado = _context.Usuarios?.AsNoTracking().FirstOrDefault(u => u.UsuarioId == id);
+            var usuarioLocalizado = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.UsuarioId == id);
 
-            return usuarioLocalizado;
+            if (usuarioLocalizado != null)
+            {
+                return usuarioLocalizado;
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Usuário com ID {id} não encontrado.");
+            }
+            
         }
     }
 }

@@ -24,7 +24,7 @@ namespace GerenciadorTarefasApi.Context
               .Property(t => t.DataPrazo)
               .HasColumnType("timestamp without time zone");
 
-           modelBuilder.Entity<Projeto>()
+            modelBuilder.Entity<Projeto>()
                .Property(p => p.DataCriacao)
                .HasColumnType("timestamp without time zone");
 

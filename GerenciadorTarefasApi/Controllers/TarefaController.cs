@@ -18,63 +18,65 @@ namespace GerenciadorTarefasApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult AdicionarTarefa([FromBody] Tarefa tarefa)
+        public async Task <ActionResult> AdicionarTarefa([FromBody] Tarefa tarefa)
         {
             if (tarefa == null)
             {
                 return BadRequest("A tarefa não pode ser nula.");
             }
 
-            _tarefaService.AdicionarTarefa(tarefa);
+            await _tarefaService.AdicionarTarefaAsync(tarefa);
             return CreatedAtAction(nameof(AdicionarTarefa), new { id = tarefa.TarefaId }, tarefa);
         }
 
         [HttpPut ("atualizar-tarefa/{id}")]
-        public ActionResult AtualizarTarefa(int id, Tarefa tarefa)
+        public async Task <ActionResult> AtualizarTarefa(int id, Tarefa tarefa)
         {
             if (tarefa == null || tarefa.TarefaId != id)
             {
                 return BadRequest("A tarefa não pode ser nula e o ID deve corresponder.");
             }
 
-            var tarefaExistente = _tarefaService.ObterTarefaPorId(id);
+            var tarefaExistente = _tarefaService.ObterTarefaPorIdAsync(id);
 
             if (tarefaExistente == null)
             {
-                return NotFound("Tarefa não encontrada.");
+                return NotFound($"Tarefa com ID:{id} não encontrada.");
             }
 
-            _tarefaService.AtualizarTarefa(id, tarefa);
+            await _tarefaService.AtualizarTarefaAsync(id, tarefa);
             return NoContent();
         }
 
         [HttpPut ("finalizar-tarefa/{id}/{confirmacao}")]
-        public ActionResult FinalizarTarefa(int id, string confirmacao)
+        public async Task <ActionResult> FinalizarTarefa(int id, string confirmacao)
         {
           
-            var tarefaExistente = _tarefaService.ObterTarefaPorId(id);
+            var tarefaExistente = _tarefaService.ObterTarefaPorIdAsync(id);
 
             if (tarefaExistente == null)
             {
                 return NotFound("Não foi possível finalizar a tarefa.");
             }
 
+            await _tarefaService.FinalizarTarefaAsync(id, confirmacao);
+
             return NoContent();
 
         }
 
         [HttpDelete("excluir-tarefa/{id}")]
-        public ActionResult ExcluirTarefa(int id)
+        public async Task <ActionResult> ExcluirTarefa(int id)
         {
            
-            _tarefaService.DeletarTarefa(id);
+            await _tarefaService.DeletarTarefaAsync(id);
             return NoContent();
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Tarefa>> ObterTodasTarefas()
+        public async Task <ActionResult> ObterTodasTarefas()
         {
-            var tarefas = _tarefaService.ObterTodasTarefas();
+            var tarefas = await _tarefaService.ObterTodasTarefasAsync();
 
             if (tarefas.Count() == 0)
             {
@@ -85,9 +87,9 @@ namespace GerenciadorTarefasApi.Controllers
         }
 
         [HttpGet("obter-pendentes")]
-        public ActionResult<IEnumerable<Tarefa>> ObterTarefasPendentes()
+        public async Task <ActionResult<IEnumerable<Tarefa>>> ObterTarefasPendentes()
         {
-            var tarefasPendentes = _tarefaService.ObterTarefaPorStatusPendente();
+            var tarefasPendentes = await _tarefaService.ObterTarefaPorStatusPendenteAsync();
             if (tarefasPendentes.Count() == 0)
             {
                 return NotFound("Nenhuma tarefa pendente encontrada.");
@@ -96,9 +98,9 @@ namespace GerenciadorTarefasApi.Controllers
         }
 
         [HttpGet("obter-tarefa/{id}")]
-        public ActionResult<Tarefa> ObterTarefaPorId(int id)
+        public async Task <ActionResult<Tarefa>> ObterTarefaPorId(int id)
         {
-            var tarefa = _tarefaService.ObterTarefaPorId(id);
+            var tarefa = await _tarefaService.ObterTarefaPorIdAsync(id);
 
             if (tarefa == null)
             {

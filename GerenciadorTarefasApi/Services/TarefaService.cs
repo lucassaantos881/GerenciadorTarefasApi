@@ -14,32 +14,34 @@ namespace GerenciadorTarefasApi.Services
             _context = context;
         }
 
-        public void AdicionarTarefa(Tarefa tarefa)
+        public async Task AdicionarTarefaAsync(Tarefa tarefa)
         {
-            try
-            {
+            
                 if (tarefa == null)
                 {
                     throw new ArgumentNullException("A tarefa não pode ser nula.");
                 }
-  
+
+                //Realiza a consulta para verificar se a data de prazo da tarefa é anterior à data de criação do projeto
+                var projeto = _context.Projetos?.FirstOrDefault(p => p.ProjetoId == tarefa.ProjetoId);
+
+                if(tarefa.DataPrazo < projeto?.DataCriacao)
+                {
+                    throw new ArgumentException("A data de prazo não pode ser anterior à data de início do projeto.");
+                }
 
                 _context.Add(tarefa);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
-            }
+                
+            
         }
 
-        public void AtualizarTarefa(int id, Tarefa tarefa)
+        public async Task AtualizarTarefaAsync(int id, Tarefa tarefa)
         {
 
-            try
-            {
+            
+
                 if (id < 0)
                 {
                     throw new ArgumentOutOfRangeException("O ID da tarefa deve ser um valor positivo.");
@@ -47,27 +49,26 @@ namespace GerenciadorTarefasApi.Services
 
                 var tarefaExistente = _context.Tarefas?.FirstOrDefault(t => t.TarefaId == id);
 
-                tarefaExistente.Titulo = tarefa.Titulo;
-                tarefaExistente.Descricao = tarefa.Descricao;
-                tarefaExistente.Status = tarefa.Status;
-                tarefaExistente.UsuarioId = tarefa.UsuarioId;
+                if (tarefaExistente == null)
+                {
+                    throw new KeyNotFoundException($"Tarefa com ID {id} não encontrada para atualizar.");
+                }
+                else
+                {
+                    tarefaExistente.Titulo = tarefa.Titulo;
+                    tarefaExistente.Descricao = tarefa.Descricao;
+                    tarefaExistente.UsuarioId = tarefa.UsuarioId;
+                    tarefaExistente.ProjetoId = tarefa.ProjetoId;
+                }
 
                 _context.Update(tarefaExistente);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
-            }
-
+                await _context.SaveChangesAsync();
+  
 
         }
 
-        public void DeletarTarefa(int id)
+        public async Task DeletarTarefaAsync(int id)
         {
-            try
-            {
                 if (id < 0)
                 {
                     throw new ArgumentOutOfRangeException("Id precisa ser um valor positivo");
@@ -75,22 +76,19 @@ namespace GerenciadorTarefasApi.Services
 
                 var excluirTarefa = _context.Tarefas?.FirstOrDefault(t => t.TarefaId == id);
 
-                _context.Remove(excluirTarefa);
-                _context.SaveChanges();
+                if(excluirTarefa == null)
+                {
+                    throw new KeyNotFoundException($"Tarefa com ID {id} não encontrada para deletar.");
+                }
 
-            }catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
-            }
-           
+                _context.Remove(excluirTarefa);
+                await _context.SaveChangesAsync();
              
         }
 
-        public void FinalizarTarefa(int id, string confirmacao)
+        public async Task FinalizarTarefaAsync(int id, string confirmacao)
         {
-            try
-            {
+           
                 if (id < 0)
                 {
                     throw new ArgumentOutOfRangeException("Id precisa ser um valor positivo");
@@ -100,7 +98,7 @@ namespace GerenciadorTarefasApi.Services
 
                 if (finalizarTarefa == null)
                 {
-                    throw new KeyNotFoundException("Tarefa não encontrada para finalização!!");
+                    throw new KeyNotFoundException($"Tarefa com ID {id} não encontrada para finalizar!.");  
                 }
 
                 if (confirmacao.ToUpper() == "SIM")
@@ -109,56 +107,56 @@ namespace GerenciadorTarefasApi.Services
 
 
                     _context.Update(confirmacao);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
                     throw new ArgumentException("Não foi possível finalizar tarefa!");
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
-            }
+         
         }
 
-        public IEnumerable<Tarefa> ObterTodasTarefas()
+        public async Task<IEnumerable<Tarefa>> ObterTodasTarefasAsync()
         {
             
              var tarefas = _context.Tarefas?.AsNoTracking().Take(10).ToList();
+
              return tarefas;
        
         }
 
-        public Tarefa ObterTarefaPorId(int id)
+        public async Task<Tarefa> ObterTarefaPorIdAsync(int id)
         {
             if (id < 0)
             {
               throw new ArgumentOutOfRangeException("Id precisa ser um valor positivo");
             }
 
-            var tarefaExistente = _context.Tarefas?.FirstOrDefault(t => t.TarefaId == id);
+            var tarefaExistente = await _context.Tarefas.FirstOrDefaultAsync(t => t.TarefaId == id);
 
-            return tarefaExistente;
+            if(tarefaExistente != null)
+            {
+                return tarefaExistente;
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Tarefa com ID {id} não encontrada.");
+            }
 
             
+
+         
+                
         }
 
-        public IEnumerable<Tarefa> ObterTarefaPorStatusPendente()
+        public async Task<IEnumerable<Tarefa>> ObterTarefaPorStatusPendenteAsync()
         {
           
-              var statusTarefas = _context.Tarefas?.Include(t => t.Status == StatusTarefa.Pendente).AsNoTracking().Take(5).ToList(); ;
+              var statusTarefas = await _context.Tarefas.Where(t => t.Status == StatusTarefa.Pendente).AsNoTracking().Take(3).ToListAsync(); 
 
               return statusTarefas;
            
         }
-
-
-      
-
-
-
 
     }
 }

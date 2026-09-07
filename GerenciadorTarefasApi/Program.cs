@@ -3,10 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using GerenciadorTarefasApi.Services;
 using System.Text.Json.Serialization;
+using Serilog;
+using GerenciadorTarefasApi.Middleware;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console() //mostra no console
+    .WriteTo.File("logs/log.txt", rollingInterval : RollingInterval.Day) //salva em arquivo de log a cada dia
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+
 
 builder.Services.AddControllers().AddJsonOptions(options => 
     options.JsonSerializerOptions.
@@ -21,8 +30,12 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 string postgreConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Host.UseSerilog();
+
 builder.Services.AddDbContext<GerenciadorContext>(options =>
         options.UseNpgsql(postgreConnection));
+
+
 
 
 var app = builder.Build();
@@ -32,7 +45,11 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+
 }
+
+//Configura o middleware de tratamento de exceções para capturar erros e retornar respostas apropriadas
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

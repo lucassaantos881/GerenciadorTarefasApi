@@ -18,41 +18,41 @@ namespace GerenciadorTarefasApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult AdicionarUsuario([FromBody] Usuario usuario)
+        public async Task <ActionResult> AdicionarUsuario([FromBody] Usuario usuario)
         {
             if (usuario == null)
             {
                 return BadRequest("O usuário não pode ser nulo.");
             }
 
-            _usuarioService.AdicionarUsuario(usuario);
+            await _usuarioService.AdicionarUsuarioAsync(usuario);
             return CreatedAtAction(nameof(AdicionarUsuario), new { id = usuario.UsuarioId }, usuario);
         }
 
         [HttpPut("atualizar-usuario/{id}")]
-        public ActionResult AtualizarUsuario(int id, Usuario usuario)
+        public async Task <ActionResult> AtualizarUsuario(int id, Usuario usuario)
         {
             if (usuario == null || id != usuario.UsuarioId)
             {
                 return BadRequest("Dados do usuário inválidos.");
             }
            
-            _usuarioService.AtualizarUsuario(id, usuario);
+            await _usuarioService.AtualizarUsuarioAsync(id, usuario);
 
             return NoContent();
         }
 
         [HttpDelete("excluir-usuario/{id}")]
-        public ActionResult ExcluirUsuario(int id)
+        public async Task <ActionResult> ExcluirUsuario(int id)
         {
-            _usuarioService.DeletarUsuario(id);
+            await _usuarioService.DeletarUsuarioAsync(id);
             return NoContent();
         }
 
         [HttpGet]
-        public ActionResult ObterTodosUsuarios() { 
+        public async Task <ActionResult<IEnumerable<Usuario>>> ObterTodosUsuarios() { 
         
-           var usuarios = _usuarioService.ObterTodosUsuarios();
+           var usuarios = await _usuarioService.ObterTodosUsuariosAsync();
 
             if(usuarios.Count() == 0)
             {
@@ -63,9 +63,9 @@ namespace GerenciadorTarefasApi.Controllers
         }
 
         [HttpGet("obter-usuario/{id}")]
-        public ActionResult ObterUsuarioPorId(int id)
+        public async Task <ActionResult<Usuario>> ObterUsuarioPorId(int id)
         {
-            var usuario = _usuarioService.ObterUsuarioPorId(id);
+            var usuario = await _usuarioService.ObterUsuarioPorIdAsync(id);
 
             if (usuario == null)
             {

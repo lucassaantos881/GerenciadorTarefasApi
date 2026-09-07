@@ -8,7 +8,6 @@ namespace GerenciadorTarefasCore.Models
     {
         Pendente,
         Em_Andamento,
-        Atrasado,
         Concluida
     }
 }

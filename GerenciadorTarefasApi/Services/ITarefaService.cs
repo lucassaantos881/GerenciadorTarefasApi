@@ -5,13 +5,13 @@ namespace GerenciadorTarefasApi.Services
     public interface ITarefaService
     {
 
-        void AdicionarTarefa(Tarefa tarefa);
-        void AtualizarTarefa(int id, Tarefa tarefa);
-        void FinalizarTarefa(int id, string confirmacao);
-        void DeletarTarefa(int id);
-        IEnumerable<Tarefa> ObterTodasTarefas();
-        Tarefa ObterTarefaPorId(int id);
-        IEnumerable<Tarefa> ObterTarefaPorStatusPendente();
+        Task AdicionarTarefaAsync(Tarefa tarefa);
+        Task AtualizarTarefaAsync(int id, Tarefa tarefa);
+        Task FinalizarTarefaAsync(int id, string confirmacao);
+        Task DeletarTarefaAsync(int id);
+        Task<IEnumerable<Tarefa>> ObterTodasTarefasAsync();
+        Task<Tarefa> ObterTarefaPorIdAsync(int id);
+        Task<IEnumerable<Tarefa>> ObterTarefaPorStatusPendenteAsync();
 
 
 

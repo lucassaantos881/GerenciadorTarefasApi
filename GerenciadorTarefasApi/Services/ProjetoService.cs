@@ -14,30 +14,21 @@ namespace GerenciadorTarefasApi.Services
             _context = context;
         }
 
-        public void AdicionarProjeto(Projeto projeto)
+        public async Task AdicionarProjetoAsync(Projeto projeto)
         {
-            try{
+   
                 if (projeto == null)
                 {
                     throw new ArgumentNullException("O projeto não pode ser nulo.");
                 }
 
                 _context.Add(projeto);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
-            }
+                await _context.SaveChangesAsync();
 
         }
 
-        public void AtualizarProjeto(int id, Projeto projeto)
+        public async Task AtualizarProjetoAsync(int id, Projeto projeto)
         {
-
-            try
-            {
 
                 if (id < 0)
                 {
@@ -48,8 +39,7 @@ namespace GerenciadorTarefasApi.Services
 
                 if (projetoExistente == null)
                 {
-                    return;
-
+                    throw new KeyNotFoundException($"Projeto com ID {id} não encontrado para atualizar.");
                 }
                 else
                 {
@@ -59,23 +49,13 @@ namespace GerenciadorTarefasApi.Services
                 }
 
                 _context.Update(projetoExistente);
-                _context.SaveChanges();
-
-            }catch (Exception ex)
-            {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
-            }
-
-
-
+                await _context.SaveChangesAsync();
 
         }
 
-        public void DeletarProjeto(int id)
+        public async Task DeletarProjetoAsync(int id)
         {
-            try
-            {
+         
                 if (id < 0)
                 {
                     throw new ArgumentOutOfRangeException("Id tem que ser um número positivo");
@@ -83,37 +63,44 @@ namespace GerenciadorTarefasApi.Services
 
                 var deletarProjeto = _context.Projetos?.FirstOrDefault(p => p.ProjetoId == id);
 
+                if(deletarProjeto == null)
+                {
+                    throw new KeyNotFoundException($"Projeto com ID {id} não encontrado para deletar.");
+                }
+
                 _context.Remove(deletarProjeto);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-            }
-            catch (Exception ex)
+               
+           
+        }
+
+
+        public async Task<Projeto> ObterProjetoPorIdAsync(int id) {
+
+
+            if (id < 0)
             {
-                Console.WriteLine($"ERROR: {ex.Message}");
-                throw;
+                throw new ArgumentOutOfRangeException("Id tem que ser um número positivo");
             }
+
+            var projeto = await _context.Projetos.FirstOrDefaultAsync(p => p.ProjetoId == id);
+
+            if (projeto != null)
+            {
+                return projeto;
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Projeto com ID {id} não encontrado.");
+            }
+
         }
 
-
-        public Projeto ObterProjetoPorId(int id){
-
-            
-          if (id < 0)
-          {
-             throw new ArgumentOutOfRangeException("Id tem que ser um número positivo");
-          }
-
-          var projeto = _context.Projetos?.FirstOrDefault(p => p.ProjetoId == id);
-
-          return projeto;
-            
-            
-        }
-
-        public IEnumerable<Projeto> ObterTodosProjetos()
+        public async Task<IEnumerable<Projeto>> ObterTodosProjetosAsync()
         {
 
-           var projetoLocalizado = _context.Projetos?.AsNoTracking().Take(5).ToList();
+           var projetoLocalizado = await _context.Projetos.AsNoTracking().Take(5).ToListAsync();
 
            return projetoLocalizado;
  
