@@ -2,6 +2,7 @@ using GerenciadorTarefasApi.Context;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using GerenciadorTarefasApi.Services;
+using GerenciadorTarefasApi.Repository;
 using System.Text.Json.Serialization;
 using Serilog;
 using GerenciadorTarefasApi.Middleware;
@@ -24,9 +25,15 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+
+//Qualquer tipo que implemente IGerenciadorRepository<T> será resolvido para a implementação IGerenciadorRepository<T>
+builder.Services.AddScoped(typeof(IGerenciadorRepository<>), typeof(GerenciadorRepository<>));
+
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 builder.Services.AddScoped<IProjetoService, ProjetoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
 
 string postgreConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -34,9 +41,6 @@ builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<GerenciadorContext>(options =>
         options.UseNpgsql(postgreConnection));
-
-
-
 
 var app = builder.Build();
 

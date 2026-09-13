@@ -7,12 +7,8 @@ namespace GerenciadorTarefasApi.Services
 
         Task AdicionarProjetoAsync(Projeto projeto);
         Task AtualizarProjetoAsync(int id, Projeto projeto);
-        Task<IEnumerable<Projeto>> ObterTodosProjetosAsync();
-        Task<Projeto> ObterProjetoPorIdAsync(int id);
         Task DeletarProjetoAsync(int id);
-        
-       
-
-
+        Task<Projeto> ObterProjetoPorIdAsync(int id);
+        Task<IEnumerable<Projeto>> ObterTodosProjetosAsync();
     }
 }

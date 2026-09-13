@@ -37,13 +37,6 @@ namespace GerenciadorTarefasApi.Controllers
                 return BadRequest("A tarefa não pode ser nula e o ID deve corresponder.");
             }
 
-            var tarefaExistente = _tarefaService.ObterTarefaPorIdAsync(id);
-
-            if (tarefaExistente == null)
-            {
-                return NotFound($"Tarefa com ID:{id} não encontrada.");
-            }
-
             await _tarefaService.AtualizarTarefaAsync(id, tarefa);
             return NoContent();
         }
@@ -51,13 +44,6 @@ namespace GerenciadorTarefasApi.Controllers
         [HttpPut ("finalizar-tarefa/{id}/{confirmacao}")]
         public async Task <ActionResult> FinalizarTarefa(int id, string confirmacao)
         {
-          
-            var tarefaExistente = _tarefaService.ObterTarefaPorIdAsync(id);
-
-            if (tarefaExistente == null)
-            {
-                return NotFound("Não foi possível finalizar a tarefa.");
-            }
 
             await _tarefaService.FinalizarTarefaAsync(id, confirmacao);
 
