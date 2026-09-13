@@ -32,6 +32,10 @@ namespace GerenciadorTarefasCore.Models
             {
                 Email = email?.ToLower();
             }
+            else
+            {
+                Email = email;
+            }
 
             
         }

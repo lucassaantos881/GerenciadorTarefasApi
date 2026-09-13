@@ -11,8 +11,14 @@ namespace GerenciadorTarefasCore.Validations
         {
 
             var texto = value as string;
-            
-            if(texto == null || !texto.ToString().Contains("@"))
+
+
+            if (texto == null)
+            {
+                return new ValidationResult("O e-mail deve ser informado!");
+            }
+
+            if(!texto.Contains("@"))
             {
                 return new ValidationResult("O e-mail deve conter o caractere '@'.");
             }

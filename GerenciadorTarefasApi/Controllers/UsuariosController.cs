@@ -15,7 +15,7 @@ namespace GerenciadorTarefasApi.Controllers
         public UsuariosController(IUsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
-        }
+        }   
 
         [HttpPost]
         public async Task <ActionResult> AdicionarUsuario([FromBody] Usuario usuario)
