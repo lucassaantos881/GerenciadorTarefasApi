@@ -10,10 +10,13 @@ namespace GerenciadorTarefasApi.Services
         private readonly IGerenciadorRepository<Tarefa> _tarefaRepository;
         private readonly ITarefaRepository _tarefaRepositoryEspecifico;
 
-        public TarefaService(IGerenciadorRepository<Tarefa> tarefaRepository, ITarefaRepository tarefaRepositoryEspecifico)
+        private readonly IProjetoService _projetoServiceValidacao;
+
+        public TarefaService(IGerenciadorRepository<Tarefa> tarefaRepository, ITarefaRepository tarefaRepositoryEspecifico, IProjetoService projetoServiceValidacao)
         {
             _tarefaRepository = tarefaRepository;
             _tarefaRepositoryEspecifico = tarefaRepositoryEspecifico;
+            _projetoServiceValidacao = projetoServiceValidacao;
         }
 
         public async Task AdicionarTarefaAsync(Tarefa tarefa)
@@ -24,6 +27,13 @@ namespace GerenciadorTarefasApi.Services
                     throw new ArgumentNullException("A tarefa não pode ser nula.");
                 }
                 
+                var projetoExistente = await _projetoServiceValidacao.ObterProjetoPorIdAsync(tarefa.ProjetoId);
+
+                if(tarefa.DataPrazo < projetoExistente.DataCriacao)
+                {
+                    throw new ArgumentException("A data do prazo da tarefa não pode ser anterior à data de criação do projeto.");
+                }
+
                 await _tarefaRepository.AdicionarAsync(tarefa);
 
             
