@@ -13,7 +13,7 @@ namespace GerenciadorTarefasApi.Services
             _usuarioRepository = usuarioRepository;
         }
 
-        public async Task AdicionarUsuarioAsync(Usuario usuario)
+        public async Task<Usuario> AdicionarUsuarioAsync(Usuario usuario)
         {
                 if (usuario == null)
                 {
@@ -21,10 +21,11 @@ namespace GerenciadorTarefasApi.Services
                 }
 
                 await _usuarioRepository.AdicionarAsync(usuario);
+                return usuario;
 
         }
 
-        public async Task AtualizarUsuarioAsync(int id, Usuario usuario)
+        public async Task<Usuario> AtualizarUsuarioAsync(int id, Usuario usuario)
         {
 
                 if(id < 0)
@@ -37,17 +38,19 @@ namespace GerenciadorTarefasApi.Services
                 usuarioExistente.Email = usuario.Email;
         
                 await _usuarioRepository.AtualizarAsync(id, usuarioExistente);
+                return usuarioExistente;
 
         }
 
-        public async Task DeletarUsuarioAsync(int id)
+        public async Task<Usuario> DeletarUsuarioAsync(int id)
         {
                 if (id < 0)
                 {
                     throw new ArgumentOutOfRangeException("O ID do usuário deve ser um valor positivo.");
                 }
 
-                await _usuarioRepository.DeletarAsync(id);
+                var usuarioDeletado = await _usuarioRepository.DeletarAsync(id);
+                return usuarioDeletado;
 
         }
 

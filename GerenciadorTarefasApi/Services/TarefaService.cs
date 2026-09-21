@@ -19,7 +19,7 @@ namespace GerenciadorTarefasApi.Services
             _projetoServiceValidacao = projetoServiceValidacao;
         }
 
-        public async Task AdicionarTarefaAsync(Tarefa tarefa)
+        public async Task<Tarefa> AdicionarTarefaAsync(Tarefa tarefa)
         {
             
                 if (tarefa == null)
@@ -35,11 +35,12 @@ namespace GerenciadorTarefasApi.Services
                 }
 
                 await _tarefaRepository.AdicionarAsync(tarefa);
+                return tarefa;
 
             
         }
 
-        public async Task AtualizarTarefaAsync(int id, Tarefa tarefa)
+        public async Task<Tarefa> AtualizarTarefaAsync(int id, Tarefa tarefa)
         {
                 if (id <= 0)
                 {
@@ -61,38 +62,41 @@ namespace GerenciadorTarefasApi.Services
                 tarefaExistente.ProjetoId = tarefa.ProjetoId;
 
                 await _tarefaRepository.AtualizarAsync(id, tarefaExistente);
+                return tarefaExistente;
 
         }
 
-        public async Task DeletarTarefaAsync(int id)
+        public async Task<Tarefa> DeletarTarefaAsync(int id)
         {
                 if (id <= 0)
                 {
                     throw new ArgumentOutOfRangeException("Id precisa ser um valor positivo");
                 }
 
-                await _tarefaRepository.DeletarAsync(id);
-
+                var tarefaDeletada = await _tarefaRepository.DeletarAsync(id);
+                return tarefaDeletada;
         }
 
-        public async Task FinalizarTarefaAsync(int id, string confirmacao)
+        public async Task<Tarefa> FinalizarTarefaAsync(int id, string confirmacao)
         {
-           
+
+               
                 if (id < 0)
                 {
                     throw new ArgumentOutOfRangeException("Id precisa ser um valor positivo");
                 }
 
-                if (confirmacao.ToUpper() == "SIM")
+                if (string.IsNullOrWhiteSpace(confirmacao))
+                {
+                    throw new ArgumentNullException("Valor inválido, possível valor nulo!!!");
+
+                }else if(confirmacao.ToLower() == "sim")
                 {
                     confirmacao = confirmacao.ToUpper();
-                    await _tarefaRepositoryEspecifico.FinalizarTarefaAsync(id, confirmacao);
+                   
                 }
-                else
-                {
-                    throw new ArgumentException("Não foi possível finalizar tarefa!");
-                }
-         
+                var tarefaDeletada = await _tarefaRepositoryEspecifico.FinalizarTarefaAsync(id, confirmacao);
+                return tarefaDeletada;
         }
 
         public async Task<IEnumerable<Tarefa>> ObterTodasTarefasAsync()
