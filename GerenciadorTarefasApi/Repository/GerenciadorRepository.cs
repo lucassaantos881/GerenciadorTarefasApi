@@ -15,7 +15,7 @@ namespace GerenciadorTarefasApi.Repository
             _context = context;
         }
 
-        public async Task AdicionarAsync(T entity)
+        public async Task<T> AdicionarAsync(T entity)
         {
             if(entity == null)
             {
@@ -24,9 +24,10 @@ namespace GerenciadorTarefasApi.Repository
 
             _context.Add(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
-        public async Task AtualizarAsync(int id,T entity)
+        public async Task<T> AtualizarAsync(int id,T entity)
         {
 
             if(id <= 0)
@@ -41,9 +42,10 @@ namespace GerenciadorTarefasApi.Repository
 
             _context.Update(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
-        public async Task DeletarAsync(int id)
+        public async Task<T> DeletarAsync(int id)
         {
             if(id <= 0)
             {
@@ -58,6 +60,7 @@ namespace GerenciadorTarefasApi.Repository
 
             _context.Remove(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<T> ObterPorIdAsync(int id)

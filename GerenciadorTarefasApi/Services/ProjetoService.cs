@@ -1,4 +1,5 @@
 ﻿using GerenciadorTarefasApi.Repository;
+using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.Models;
 
 namespace GerenciadorTarefasApi.Services
@@ -7,25 +8,30 @@ namespace GerenciadorTarefasApi.Services
     {
 
         private readonly IGerenciadorRepository<Projeto> _projetoRepository;
+        private readonly IProjetoRepository _projetoRepositoryEspecifico;
 
-        public ProjetoService(IGerenciadorRepository<Projeto> projetoRepository)
+        public ProjetoService(IGerenciadorRepository<Projeto> projetoRepository, IProjetoRepository projetoRepositoryEspecifico)
         {
             _projetoRepository = projetoRepository;
+            _projetoRepositoryEspecifico = projetoRepositoryEspecifico;
         }
 
-        public async Task AdicionarProjetoAsync(Projeto projeto)
+        public async Task<Projeto> AdicionarProjetoAsync(ProjetoDto projetoDto)
         {
    
-                if (projeto == null)
+                if (projetoDto == null)
                 {
                     throw new ArgumentNullException("O projeto não pode ser nulo.");
                 }
 
+                var projeto = new Projeto(projetoDto.Nome, projetoDto.Descricao, projetoDto.DataCriacao);
+
                 await _projetoRepository.AdicionarAsync(projeto);
+                return projeto;
 
         }
 
-        public async Task AtualizarProjetoAsync(int id, Projeto projeto)
+        public async Task<Projeto> AtualizarProjetoAsync(int id, ProjetoDto projetoDto)
         {
 
                 if (id < 0)
@@ -41,17 +47,16 @@ namespace GerenciadorTarefasApi.Services
                         throw new KeyNotFoundException("Projeto não encontrado.");
                 }
 
-                projetoExistente.Nome = projeto.Nome;
-                projetoExistente.Descricao = projeto.Descricao;
-                projetoExistente.DataCriacao = projeto.DataCriacao;
-                projetoExistente.DataConclusao = projeto.DataConclusao;
-            
+                projetoExistente.Nome = projetoDto.Nome;
+                projetoExistente.Descricao = projetoDto.Descricao;
+                
                 await _projetoRepository.AtualizarAsync(id, projetoExistente);
+                return projetoExistente;
                 
 
         }
 
-        public async Task DeletarProjetoAsync(int id)
+        public async Task<Projeto> DeletarProjetoAsync(int id)
         {
          
                 if (id < 0)
@@ -59,11 +64,11 @@ namespace GerenciadorTarefasApi.Services
                     throw new ArgumentOutOfRangeException("Id tem que ser um número positivo");
                 }
 
-                await _projetoRepository.DeletarAsync(id);
+                var projetoDeletado = await _projetoRepository.DeletarAsync(id);
+                return projetoDeletado;
 
 
         }
-
 
         public async Task<Projeto> ObterProjetoPorIdAsync(int id) {
 
@@ -73,7 +78,8 @@ namespace GerenciadorTarefasApi.Services
                 throw new ArgumentOutOfRangeException("Id tem que ser um número positivo");
             }
 
-            return await _projetoRepository.ObterPorIdAsync(id);
+            var projetoLocalizado = await _projetoRepository.ObterPorIdAsync(id);
+            return projetoLocalizado;
 
         }
 

@@ -1,6 +1,7 @@
 ﻿using GerenciadorTarefasApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.Models;
 
 namespace GerenciadorTarefasApi.Controllers
@@ -19,31 +20,32 @@ namespace GerenciadorTarefasApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Projeto projeto)
+        public async Task<ActionResult> Post([FromBody] ProjetoDto projetoDto)
         {
 
-            if (projeto == null)
+            if (projetoDto == null)
             {
                 return BadRequest("Não foi possível adicionar o projeto");
 
             }
 
-            await _projetoService.AdicionarProjetoAsync(projeto);
-            return CreatedAtAction(nameof(Post), new { id = projeto.ProjetoId }, projeto);
+            var projetoCriado = await _projetoService.AdicionarProjetoAsync(projetoDto);
+            return CreatedAtAction(nameof(Post), new { id = projetoCriado.ProjetoId }, projetoCriado);
 
 
         }
 
+      
         [HttpPut("atualizar-projeto/{id}")]
-        public async Task<ActionResult> Put(int id, Projeto projeto)
+        public async Task<ActionResult> Put(int id, ProjetoDto projetoDto)
         {
-           
-            if (projeto == null || projeto.ProjetoId != id)
+            
+            if (projetoDto == null)
             {
                     return BadRequest("O projeto não pode ser nulo e o ID deve corresponder.");
             }
 
-           await _projetoService.AtualizarProjetoAsync(id, projeto);
+           await _projetoService.AtualizarProjetoAsync(id, projetoDto);
            return NoContent();
 
          
