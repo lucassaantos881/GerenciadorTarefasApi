@@ -26,6 +26,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddScoped<IProjetoRepository, ProjetoRepository>();
 
 //Qualquer tipo que implemente IGerenciadorRepository<T> será resolvido para a implementação IGerenciadorRepository<T>
 builder.Services.AddScoped(typeof(IGerenciadorRepository<>), typeof(GerenciadorRepository<>));
@@ -33,6 +34,7 @@ builder.Services.AddScoped(typeof(IGerenciadorRepository<>), typeof(GerenciadorR
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 builder.Services.AddScoped<IProjetoService, ProjetoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
 
 
 string postgreConnection = builder.Configuration.GetConnectionString("DefaultConnection");

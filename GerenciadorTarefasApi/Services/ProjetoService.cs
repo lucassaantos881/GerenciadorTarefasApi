@@ -70,6 +70,22 @@ namespace GerenciadorTarefasApi.Services
 
         }
 
+        public async Task<Projeto> FinalizarProjeto(int id, string confirmacao, DateTime dataConclusao)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentOutOfRangeException("ID do projeto inválido.", nameof(id));
+            }
+
+            if (string.IsNullOrWhiteSpace(confirmacao))
+            {
+                throw new ArgumentNullException("Confirmação não pode ser nula!!");
+            }
+
+            return await _projetoRepositoryEspecifico.ConcluirProjetoAsync(id, confirmacao, dataConclusao);
+
+        }
+
         public async Task<Projeto> ObterProjetoPorIdAsync(int id) {
 
 

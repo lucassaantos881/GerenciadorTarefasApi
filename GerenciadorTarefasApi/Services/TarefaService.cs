@@ -78,6 +78,39 @@ namespace GerenciadorTarefasApi.Services
                 return tarefaDeletada;
         }
 
+        public async Task<Tarefa> IniciarTarefaAsync(int id, int idUsuario)
+        {
+            if(id <= 0 || idUsuario <= 0)
+            {
+                throw new ArgumentException("Valor inválido, ID precisa ser um valor válido para iniciar tarefa");
+            }
+
+            return await _tarefaRepositoryEspecifico.IniciarTarefaAsync(id, idUsuario);
+            
+        }
+
+        public async Task<Tarefa> CancelarTarefaAsync(int id, string confirmacao)
+        {
+
+            if (id <= 0)
+            {
+                throw new ArgumentException("Valor inválido, ID precisa ser um valor válido para cancelar tarefa");
+            }
+
+            if (string.IsNullOrWhiteSpace(confirmacao))
+            {
+                throw new ArgumentException("Confirmação não pode ser nula!!");
+            }
+            else if (confirmacao.ToLower() == "sim")
+            {
+                confirmacao = confirmacao.ToUpper();
+
+            }
+
+            return await _tarefaRepositoryEspecifico.CancelarTarefaAsync(id, confirmacao);
+
+        }
+
         public async Task<Tarefa> FinalizarTarefaAsync(int id, string confirmacao)
         {
 

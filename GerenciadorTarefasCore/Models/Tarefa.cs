@@ -15,7 +15,7 @@ namespace GerenciadorTarefasCore.Models
 
         }
 
-        public Tarefa(string titulo, string descricao, StatusTarefa status, DateTime dataPrazo, int usuarioId, int projetoId)
+        public Tarefa(string titulo, string descricao, DateTime dataPrazo, int usuarioId, int projetoId)
         {
             if(string.IsNullOrWhiteSpace(titulo))
             {
@@ -39,7 +39,6 @@ namespace GerenciadorTarefasCore.Models
 
             Titulo = titulo;
             Descricao = descricao;
-            Status = status;
             DataPrazo = dataPrazo;
             UsuarioId = usuarioId;
             ProjetoId = projetoId;
@@ -54,7 +53,7 @@ namespace GerenciadorTarefasCore.Models
         [Required]
         [StringLength(150)]
         public string? Descricao { get; set; }
-        public StatusTarefa Status { get; set; }
+        public StatusTarefa Status { get; set; } = StatusTarefa.Pendente;
         public DateTime? DataPrazo { get; set; }
         public int ProjetoId { get; set; }
         public int UsuarioId { get; set; }
@@ -64,6 +63,20 @@ namespace GerenciadorTarefasCore.Models
 
         [JsonIgnore]
         public Usuario? Usuario { get; set; }
+
+        public void IniciarTarefa(int idUsuario)
+        {
+            if(idUsuario == UsuarioId)
+            {
+                Status = StatusTarefa.Em_Andamento;
+            }
+            else{
+                throw new InvalidOperationException("Não foi possível iniciar tarefa, usuário não vinculado para esta tarefa");
+            }
+
+
+
+        }
 
         public void FinalizarTarefa(string confirmar)
         {
@@ -77,6 +90,18 @@ namespace GerenciadorTarefasCore.Models
             }
   
 
+        }
+
+        public void CancelarTarefa(string confirmar)
+        {
+            if (confirmar == "SIM" && Status == StatusTarefa.Pendente)
+            {
+                Status = StatusTarefa.Cancelada;
+            }
+            else
+            {
+                throw new InvalidOperationException("Não foi possível cancelar tarefa, pois a mesma ja foi iniciada ou concluída!!");
+            }
         }
 
 

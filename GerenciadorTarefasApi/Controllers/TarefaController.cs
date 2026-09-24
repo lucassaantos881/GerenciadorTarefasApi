@@ -42,6 +42,22 @@ namespace GerenciadorTarefasApi.Controllers
             return NoContent();
         }
 
+        [HttpPut("iniciar-tarefa/{id}/{idUsuario}")]
+        public async Task<ActionResult> IniciarTarefa(int id, int idUsuario)
+        {
+      
+            await _tarefaService.IniciarTarefaAsync(id, idUsuario);
+            return NoContent();
+        }
+
+        [HttpPut("cancelar-tarefa/{id}/{confirmacao}")]
+        public async Task<ActionResult> CancelarTarefa(int id, string confirmacao)
+        {
+     
+            await _tarefaService.CancelarTarefaAsync(id, confirmacao);
+            return NoContent();
+        }
+
         [HttpPut ("finalizar-tarefa/{id}/{confirmacao}")]
         public async Task <ActionResult> FinalizarTarefa(int id, string confirmacao)
         {

@@ -12,7 +12,7 @@ namespace GerenciadorTarefasCore.Models
     {
 
         
-        public Projeto(string nome, string descricao, DateTime dataCriacao, DateTime dataConclusao)
+        public Projeto(string nome, string descricao, DateTime dataCriacao)
         {
             if (string.IsNullOrWhiteSpace(nome))
             {
@@ -27,10 +27,9 @@ namespace GerenciadorTarefasCore.Models
             Nome = nome;
             Descricao = descricao;
             DataCriacao = dataCriacao;
-            DataConclusao = dataConclusao;
             Tarefas = new Collection<Tarefa>();
         }
-
+        
         public int ProjetoId { get; set; }
 
         //Required é um atributo que obriga a tal propriedade a ser preenchida com um valor.
@@ -44,10 +43,22 @@ namespace GerenciadorTarefasCore.Models
         public DateTime DataCriacao { get; set; }
         public DateTime DataConclusao { get; set; }
 
-        [JsonIgnore]
+        public bool Finalizado { get; set; } = false;
+
         public ICollection<Tarefa>? Tarefas { get; set; }
 
-        
+        public void FinalizarProjeto(string confirmacao, DateTime dataConclusao)
+        {
+            if (confirmacao.ToUpper() == "SIM")
+            {
+                Finalizado = true;
+                DataConclusao = dataConclusao;
+            }
+            else
+            {
+                throw new InvalidOperationException("Para finalizar o projeto, confirme com 'SIM'.");
+            }
+        }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

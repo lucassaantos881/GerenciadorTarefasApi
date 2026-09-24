@@ -3,6 +3,7 @@ using System;
 using GerenciadorTarefasApi.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GerenciadorTarefasApi.Migrations
 {
     [DbContext(typeof(GerenciadorContext))]
-    partial class GerenciadorContextModelSnapshot : ModelSnapshot
+    [Migration("20260921004155_AdicionadoFinalizadoProjeto")]
+    partial class AdicionadoFinalizadoProjeto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

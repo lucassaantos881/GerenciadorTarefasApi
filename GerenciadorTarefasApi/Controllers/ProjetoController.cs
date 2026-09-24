@@ -42,13 +42,25 @@ namespace GerenciadorTarefasApi.Controllers
             
             if (projetoDto == null)
             {
-                    return BadRequest("O projeto não pode ser nulo e o ID deve corresponder.");
+                    return BadRequest("O projeto não pode ser nulo");
             }
 
            await _projetoService.AtualizarProjetoAsync(id, projetoDto);
            return NoContent();
 
          
+        }
+
+        [HttpPut("finalizar-projeto/{id},{confirmacao}/{dataConclusao}")]
+        public async Task<ActionResult> FinalizarProjetoAsync(int id, string confirmacao, DateTime dataConclusao)
+        {
+            if (id < 0)
+            {
+                return BadRequest();
+            }
+
+            await _projetoService.FinalizarProjeto(id, confirmacao, dataConclusao);
+            return NoContent();
         }
 
         
