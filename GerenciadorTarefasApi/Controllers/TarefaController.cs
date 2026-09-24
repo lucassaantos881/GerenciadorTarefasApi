@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using GerenciadorTarefasCore.Models;
+using GerenciadorTarefasCore.DTO_s;
 
 namespace GerenciadorTarefasApi.Controllers
 {
@@ -18,32 +19,36 @@ namespace GerenciadorTarefasApi.Controllers
         }
 
         [HttpPost]
-        public async Task <ActionResult> AdicionarTarefa([FromBody] Tarefa tarefa)
+        public async Task <ActionResult> AdicionarTarefa([FromBody] TarefaDto tarefaDto)
         {
-            if (tarefa == null)
+            if (tarefaDto == null)
             {
                 return BadRequest("A tarefa não pode ser nula.");
             }
 
-            await _tarefaService.AdicionarTarefaAsync(tarefa);
-            return CreatedAtAction(nameof(AdicionarTarefa), new { id = tarefa.TarefaId }, tarefa);
+            var tarefaCriada = await _tarefaService.AdicionarTarefaAsync(tarefaDto);
+            return CreatedAtAction(nameof(AdicionarTarefa), new { id = tarefaCriada.TarefaId }, tarefaCriada);
         }
 
         [HttpPut ("atualizar-tarefa/{id}")]
-        public async Task <ActionResult> AtualizarTarefa(int id, Tarefa tarefa)
+        public async Task <ActionResult> AtualizarTarefa(int id, TarefaDto tarefaDto)
         {
-            if (tarefa == null || tarefa.TarefaId != id)
+            if (tarefaDto == null)
             {
-                return BadRequest("A tarefa não pode ser nula e o ID deve corresponder.");
+                return BadRequest("A tarefa não pode ser nula");
             }
 
-            await _tarefaService.AtualizarTarefaAsync(id, tarefa);
+            await _tarefaService.AtualizarTarefaAsync(id, tarefaDto);
             return NoContent();
         }
 
         [HttpPut ("finalizar-tarefa/{id}/{confirmacao}")]
         public async Task <ActionResult> FinalizarTarefa(int id, string confirmacao)
         {
+            if(confirmacao == null)
+            {
+                return BadRequest();
+            }
 
             await _tarefaService.FinalizarTarefaAsync(id, confirmacao);
 

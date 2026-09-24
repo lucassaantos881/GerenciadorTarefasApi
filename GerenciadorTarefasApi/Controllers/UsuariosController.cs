@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using GerenciadorTarefasCore.Models;
+using GerenciadorTarefasCore.DTO_s;
 
 namespace GerenciadorTarefasApi.Controllers
 {
@@ -18,26 +19,27 @@ namespace GerenciadorTarefasApi.Controllers
         }   
 
         [HttpPost]
-        public async Task <ActionResult> AdicionarUsuario([FromBody] Usuario usuario)
+        public async Task <ActionResult> AdicionarUsuario([FromBody] UsuarioDto usuarioDto)
         {
-            if (usuario == null)
+            if (usuarioDto == null)
             {
                 return BadRequest("O usuário não pode ser nulo.");
             }
 
-            await _usuarioService.AdicionarUsuarioAsync(usuario);
-            return CreatedAtAction(nameof(AdicionarUsuario), new { id = usuario.UsuarioId }, usuario);
+            var usuarioCriado = await _usuarioService.AdicionarUsuarioAsync(usuarioDto);
+
+            return CreatedAtAction(nameof(AdicionarUsuario), new { id = usuarioCriado.UsuarioId }, usuarioCriado);
         }
 
         [HttpPut("atualizar-usuario/{id}")]
-        public async Task <ActionResult> AtualizarUsuario(int id, Usuario usuario)
+        public async Task <ActionResult> AtualizarUsuario(int id, UsuarioDto usuarioDto)
         {
-            if (usuario == null || id != usuario.UsuarioId)
+            if (usuarioDto == null)
             {
                 return BadRequest("Dados do usuário inválidos.");
             }
            
-            await _usuarioService.AtualizarUsuarioAsync(id, usuario);
+            await _usuarioService.AtualizarUsuarioAsync(id, usuarioDto);
 
             return NoContent();
         }

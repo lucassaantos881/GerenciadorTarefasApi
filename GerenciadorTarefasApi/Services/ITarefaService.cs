@@ -5,8 +5,8 @@ namespace GerenciadorTarefasApi.Services
 {
     public interface ITarefaService
     {
-        Task<Tarefa> AdicionarTarefaAsync(Tarefa tarefaDto);
-        Task<Tarefa> AtualizarTarefaAsync(int id, Tarefa tarefaDto);
+        Task<Tarefa> AdicionarTarefaAsync(TarefaDto tarefaDto);
+        Task<Tarefa> AtualizarTarefaAsync(int id, TarefaDto tarefaDto);
         Task<Tarefa> DeletarTarefaAsync(int id);
         Task<Tarefa> FinalizarTarefaAsync(int id, string confirmacao);
         Task<Tarefa> ObterTarefaPorIdAsync(int id);

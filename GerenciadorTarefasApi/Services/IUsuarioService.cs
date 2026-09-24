@@ -5,8 +5,8 @@ namespace GerenciadorTarefasApi.Services
 {
     public interface IUsuarioService
     {
-        Task<Usuario> AdicionarUsuarioAsync(Usuario usuario);
-        Task<Usuario> AtualizarUsuarioAsync(int id, Usuario usuario);
+        Task<Usuario> AdicionarUsuarioAsync(UsuarioDto usuario);
+        Task<Usuario> AtualizarUsuarioAsync(int id, UsuarioDto usuario);
         Task<Usuario> DeletarUsuarioAsync(int id);
         Task<Usuario> ObterUsuarioPorIdAsync(int id);
         Task<IEnumerable<Usuario>> ObterTodosUsuariosAsync();
