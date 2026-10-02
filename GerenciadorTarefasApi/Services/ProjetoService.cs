@@ -1,6 +1,7 @@
 ﻿using GerenciadorTarefasApi.Repository;
 using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.Models;
+using GerenciadorTarefasCore.DTO_s.Mappings;
 
 namespace GerenciadorTarefasApi.Services
 {
@@ -24,7 +25,7 @@ namespace GerenciadorTarefasApi.Services
                     throw new ArgumentNullException("O projeto não pode ser nulo.");
                 }
 
-                var projeto = new Projeto(projetoDto.Nome, projetoDto.Descricao, projetoDto.DataCriacao);
+                var projeto = projetoDto.ToProjeto();
 
                 await _projetoRepository.AdicionarAsync(projeto);
                 return projeto;
@@ -47,9 +48,8 @@ namespace GerenciadorTarefasApi.Services
                         throw new KeyNotFoundException("Projeto não encontrado.");
                 }
 
-                projetoExistente.Nome = projetoDto.Nome;
-                projetoExistente.Descricao = projetoDto.Descricao;
-                
+                projetoExistente.AtualizarProjeto(projetoDto);
+
                 await _projetoRepository.AtualizarAsync(id, projetoExistente);
                 return projetoExistente;
                 

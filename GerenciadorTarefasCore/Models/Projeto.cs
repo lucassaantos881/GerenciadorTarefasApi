@@ -11,7 +11,11 @@ namespace GerenciadorTarefasCore.Models
     public class Projeto : IValidatableObject
     {
 
-        
+        public Projeto()
+        {
+
+        }
+
         public Projeto(string nome, string descricao, DateTime dataCriacao)
         {
             if (string.IsNullOrWhiteSpace(nome))
@@ -40,6 +44,7 @@ namespace GerenciadorTarefasCore.Models
         [Required]
         [StringLength(100)]
         public string Descricao { get; set; }
+        
         public DateTime DataCriacao { get; set; }
         public DateTime DataConclusao { get; set; }
 

@@ -20,6 +20,11 @@ namespace GerenciadorTarefasCore.DTO_s
         public int ProjetoId { get; set; }
         public int UsuarioId { get; set; }
 
+        public TarefaDto()
+        {
+
+        }
+
         public TarefaDto(string titulo, string descricao, DateTime dataPrazo, int projetoId, int usuarioId)
         {
             Titulo = titulo;

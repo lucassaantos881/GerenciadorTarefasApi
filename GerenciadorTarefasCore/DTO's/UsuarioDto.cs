@@ -17,10 +17,15 @@ namespace GerenciadorTarefasCore.DTO_s
         [ContemArroba]
         public string Email { get; set; }
 
+        public UsuarioDto()
+        {
+        }
+
         public UsuarioDto(string nome, string email)
         {
             Nome = nome;
             Email = email;
         }
+
     }
 }

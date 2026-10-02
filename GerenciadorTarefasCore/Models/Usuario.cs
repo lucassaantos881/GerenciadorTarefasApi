@@ -11,6 +11,11 @@ namespace GerenciadorTarefasCore.Models
     public class Usuario
     {
 
+        public Usuario()
+        {
+          
+        }
+
         public Usuario(string nome, string email)
         {
             if (string.IsNullOrWhiteSpace(nome))

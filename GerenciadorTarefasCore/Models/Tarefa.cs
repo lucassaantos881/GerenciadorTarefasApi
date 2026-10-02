@@ -48,13 +48,13 @@ namespace GerenciadorTarefasCore.Models
 
         [Required]
         [StringLength(50)]
-        public string? Titulo { get; set; }
+        public string Titulo { get; set; }
 
         [Required]
         [StringLength(150)]
-        public string? Descricao { get; set; }
+        public string Descricao { get; set; }
         public StatusTarefa Status { get; set; } = StatusTarefa.Pendente;
-        public DateTime? DataPrazo { get; set; }
+        public DateTime DataPrazo { get; set; }
         public int ProjetoId { get; set; }
         public int UsuarioId { get; set; }
 

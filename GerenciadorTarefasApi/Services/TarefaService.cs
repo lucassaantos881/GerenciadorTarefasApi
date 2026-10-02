@@ -2,6 +2,7 @@
 using GerenciadorTarefasApi.Repository;
 using GerenciadorTarefasCore.Models;
 using GerenciadorTarefasCore.DTO_s;
+using GerenciadorTarefasCore.DTO_s.Mappings;
 
 namespace GerenciadorTarefasApi.Services
 {
@@ -35,7 +36,7 @@ namespace GerenciadorTarefasApi.Services
                     throw new ArgumentException("A data do prazo da tarefa não pode ser anterior à data de criação do projeto.");
                 }
 
-                var tarefa = new Tarefa(tarefaDto.Titulo, tarefaDto.Descricao, tarefaDto.DataPrazo, tarefaDto.UsuarioId, tarefaDto.ProjetoId);
+                var tarefa = tarefaDto.ToTarefa();
 
                 await _tarefaRepository.AdicionarAsync(tarefa);
                 return tarefa;
@@ -57,10 +58,7 @@ namespace GerenciadorTarefasApi.Services
                     throw new KeyNotFoundException("Tarefa não encontrada.");
                 }
 
-                tarefaExistente.Titulo = tarefaDto.Titulo;
-                tarefaExistente.Descricao = tarefaDto.Descricao;   
-                tarefaExistente.UsuarioId = tarefaDto.UsuarioId;
-                tarefaExistente.ProjetoId = tarefaDto.ProjetoId;
+                tarefaExistente.AtualizarTarefa(tarefaDto);
 
                 await _tarefaRepository.AtualizarAsync(id, tarefaExistente);
                 return tarefaExistente;

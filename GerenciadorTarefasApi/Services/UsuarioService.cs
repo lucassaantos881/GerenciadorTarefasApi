@@ -1,6 +1,7 @@
 ﻿using GerenciadorTarefasApi.Repository;
 using GerenciadorTarefasCore.Models;
 using GerenciadorTarefasCore.DTO_s;
+using GerenciadorTarefasCore.DTO_s.Mappings;
 
 namespace GerenciadorTarefasApi.Services
 {
@@ -21,7 +22,7 @@ namespace GerenciadorTarefasApi.Services
                     throw new ArgumentNullException("O usuário não pode ser nulo.");
                 }
 
-                var usuario = new Usuario(usuarioDto.Nome, usuarioDto.Email);
+                var usuario = usuarioDto.ToUsuario();
 
                 await _usuarioRepository.AdicionarAsync(usuario);
                 return usuario;
@@ -37,8 +38,8 @@ namespace GerenciadorTarefasApi.Services
                 }
 
                 var usuarioExistente = await _usuarioRepository.ObterPorIdAsync(id);
-                usuarioExistente.Nome = usuarioDto.Nome;
-                usuarioExistente.Email = usuarioDto.Email;
+                
+                usuarioExistente.AtualizarUsuario(usuarioDto);
         
                 await _usuarioRepository.AtualizarAsync(id, usuarioExistente);
                 return usuarioExistente;

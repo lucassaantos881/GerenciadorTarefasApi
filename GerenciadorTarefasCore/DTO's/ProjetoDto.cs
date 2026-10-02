@@ -17,7 +17,12 @@ namespace GerenciadorTarefasCore.DTO_s
         [Required]
         [StringLength(150)]
         public string Descricao { get; set; }
+
         public DateTime DataCriacao { get; set; }
+
+        public ProjetoDto()
+        {
+        }
 
         public ProjetoDto(string nome, string descricao, DateTime dataCriacao)
         {
