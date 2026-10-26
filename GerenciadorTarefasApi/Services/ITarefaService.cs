@@ -1,5 +1,6 @@
 ﻿using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.Models;
+using GerenciadorTarefasApi.Pagination;
 
 namespace GerenciadorTarefasApi.Services
 {
@@ -13,6 +14,7 @@ namespace GerenciadorTarefasApi.Services
         Task<Tarefa> FinalizarTarefaAsync(int id, string confirmacao);
         Task<Tarefa> ObterTarefaPorIdAsync(int id);
         Task<IEnumerable<Tarefa>> ObterTodasTarefasAsync();
+        Task<IEnumerable<Tarefa>> ObterTarefasPaginadoAsync(GerenciadorParameter parameter);
         Task<IEnumerable<Tarefa>> ObterTarefaPorStatusPendenteAsync();
     }
 }

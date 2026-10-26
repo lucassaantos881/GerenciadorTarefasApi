@@ -1,8 +1,9 @@
-﻿using GerenciadorTarefasApi.Services;
+﻿using GerenciadorTarefasApi.Pagination;
+using GerenciadorTarefasApi.Services;
+using GerenciadorTarefasCore.DTO_s;
+using GerenciadorTarefasCore.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using GerenciadorTarefasCore.Models;
-using GerenciadorTarefasCore.DTO_s;
 
 namespace GerenciadorTarefasApi.Controllers
 {
@@ -51,16 +52,27 @@ namespace GerenciadorTarefasApi.Controllers
             return NoContent();
         }
 
-        [HttpGet]
-        public async Task <ActionResult<IEnumerable<Usuario>>> ObterTodosUsuarios() { 
-        
-           var usuarios = await _usuarioService.ObterTodosUsuariosAsync();
+        [HttpGet("paginacao")]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios([FromQuery] GerenciadorParameter parameter)
+        {
+            var usuarios = await _usuarioService.ObterUsuariosPaginadoAsync(parameter);
 
-            if(usuarios.Count() == 0)
+            if (usuarios == null)
             {
-                return NotFound("Nenhum usuário encontrado.");
+                return NotFound("Usuários não encontrados");
             }
 
+            return Ok(usuarios);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetTodosUsuarios()
+        {
+            var usuarios = await _usuarioService.ObterTodosUsuariosAsync();
+            if (usuarios == null)
+            {
+                return NotFound("Usuários não encontrados");
+            }
             return Ok(usuarios);
         }
 

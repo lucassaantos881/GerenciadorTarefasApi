@@ -1,6 +1,9 @@
 ﻿using GerenciadorTarefasApi.Context;
+using GerenciadorTarefasApi.Pagination;
 using GerenciadorTarefasCore.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Reflection.Metadata;
 
 namespace GerenciadorTarefasApi.Repository
 {
@@ -75,8 +78,22 @@ namespace GerenciadorTarefasApi.Repository
 
         public async Task<IEnumerable<T>> ObterTodosAsync()
         {
-            return await _context.Set<T>().AsNoTracking().ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
-        
+
+        public async Task<IEnumerable<T>> ObterPaginadoAsync(GerenciadorParameter parameter, Func<IQueryable<T>, IOrderedQueryable<T>> ordenacao)
+        {
+
+            // Realiza a consulta ao banco de dados e armazena um resultado sem ordenação em uma variável
+            var consulta = ordenacao(_context.Set<T>());
+
+            // Aplica a paginação à consulta usando Skip e Take, retornando apenas os registros correspondentes à página solicitada
+            return await consulta
+                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                .Take(parameter.PageSize)
+                .ToListAsync();
+        }
+
+
     }
 }

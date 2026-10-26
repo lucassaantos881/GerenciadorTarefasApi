@@ -2,6 +2,7 @@
 using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.Models;
 using GerenciadorTarefasCore.DTO_s.Mappings;
+using GerenciadorTarefasApi.Pagination;
 
 namespace GerenciadorTarefasApi.Services
 {
@@ -102,14 +103,24 @@ namespace GerenciadorTarefasApi.Services
         public async Task<IEnumerable<Projeto>> ObterTodosProjetosAsync()
         {
 
-           var projetoLocalizado = await _projetoRepository.ObterTodosAsync();
+           return await _projetoRepository.ObterTodosAsync();
 
-           return projetoLocalizado;
- 
+           
         }
 
-       
+        public async Task<IEnumerable<Projeto>> ObterProjetosPaginadoAsync(GerenciadorParameter parameter)
+        {
 
-        
+            // Chama o método da consulta e por meio dela é possível ordenar o objeto passando a chave primária do projeto,
+            // assim retornando uma lista ordenada de forma crescente.
+            return await _projetoRepository.ObterPaginadoAsync(parameter,
+                consulta => consulta.OrderBy(p => p.ProjetoId));
+            
+
+
+        }
+
+
+
     }
 }

@@ -2,6 +2,7 @@
 using GerenciadorTarefasCore.Models;
 using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.DTO_s.Mappings;
+using GerenciadorTarefasApi.Pagination;
 
 namespace GerenciadorTarefasApi.Services
 {
@@ -63,6 +64,12 @@ namespace GerenciadorTarefasApi.Services
            
            return await _usuarioRepository.ObterTodosAsync();
 
+        }
+
+        public async Task<IEnumerable<Usuario>> ObterUsuariosPaginadoAsync(GerenciadorParameter parameter)
+        {          
+            return await _usuarioRepository.ObterPaginadoAsync(parameter, 
+                consulta => consulta.OrderBy(u => u.UsuarioId));
         }
 
         public async Task<Usuario> ObterUsuarioPorIdAsync(int id)

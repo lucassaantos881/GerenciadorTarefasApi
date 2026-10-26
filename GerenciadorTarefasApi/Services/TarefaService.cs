@@ -3,6 +3,7 @@ using GerenciadorTarefasApi.Repository;
 using GerenciadorTarefasCore.Models;
 using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.DTO_s.Mappings;
+using GerenciadorTarefasApi.Pagination;
 
 namespace GerenciadorTarefasApi.Services
 {
@@ -136,6 +137,12 @@ namespace GerenciadorTarefasApi.Services
             
             return await _tarefaRepository.ObterTodosAsync();
 
+        }
+
+        public async Task<IEnumerable<Tarefa>> ObterTarefasPaginadoAsync(GerenciadorParameter parameter)
+        {
+            return await _tarefaRepository.ObterPaginadoAsync(parameter,
+                consulta => consulta.OrderBy(t => t.TarefaId));
         }
 
         public async Task<Tarefa> ObterTarefaPorIdAsync(int id)

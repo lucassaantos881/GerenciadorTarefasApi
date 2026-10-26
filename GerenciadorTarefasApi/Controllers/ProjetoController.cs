@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using GerenciadorTarefasCore.DTO_s;
 using GerenciadorTarefasCore.Models;
+using GerenciadorTarefasApi.Pagination;
 
 namespace GerenciadorTarefasApi.Controllers
 {
@@ -78,10 +79,10 @@ namespace GerenciadorTarefasApi.Controllers
  
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Projeto>>> GetProjetos()
+        [HttpGet("paginacao")]
+        public async Task<ActionResult<IEnumerable<Projeto>>> GetProjetos([FromQuery] GerenciadorParameter parameter)
         {
-            var projetos = await _projetoService.ObterTodosProjetosAsync();
+            var projetos = await _projetoService.ObterProjetosPaginadoAsync(parameter);
 
             if(projetos == null)
             {
@@ -91,7 +92,17 @@ namespace GerenciadorTarefasApi.Controllers
             return Ok(projetos);
         }
 
-        
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Projeto>>> GetTodosProjetos()
+        {
+            var projetos = await _projetoService.ObterTodosProjetosAsync();
+            if (projetos == null)
+            {
+                return NotFound("Projetos não encontrados");
+            }
+            return Ok(projetos);
+        }
+
         [HttpGet("obter-projeto/{id}")]
         public async Task <ActionResult<Projeto>> GetProjetoPorId(int id)
         {

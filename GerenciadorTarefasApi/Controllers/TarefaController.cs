@@ -1,8 +1,9 @@
-﻿using GerenciadorTarefasApi.Services;
+﻿using GerenciadorTarefasApi.Pagination;
+using GerenciadorTarefasApi.Services;
+using GerenciadorTarefasCore.DTO_s;
+using GerenciadorTarefasCore.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using GerenciadorTarefasCore.Models;
-using GerenciadorTarefasCore.DTO_s;
 
 namespace GerenciadorTarefasApi.Controllers
 {
@@ -80,18 +81,30 @@ namespace GerenciadorTarefasApi.Controllers
             return NoContent();
         }
 
-        [HttpGet]
-        public async Task <ActionResult> ObterTodasTarefas()
+        [HttpGet("paginacao")]
+        public async Task<ActionResult<IEnumerable<Tarefa>>> GetTarefasPaginado([FromQuery] GerenciadorParameter parameter)
         {
-            var tarefas = await _tarefaService.ObterTodasTarefasAsync();
+            var tarefas = await _tarefaService.ObterTarefasPaginadoAsync(parameter);
 
-            if (tarefas.Count() == 0)
+            if (tarefas == null)
             {
-                return NotFound("Nenhuma tarefa encontrada.");
+                return NotFound("Tarefas não encontradas");
             }
 
             return Ok(tarefas);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Tarefa>>> GetTodosProjetos()
+        {
+            var tarefas = await _tarefaService.ObterTodasTarefasAsync();
+            if (tarefas == null)
+            {
+                return NotFound("Tarefas não encontradas");
+            }
+            return Ok(tarefas);
+        }
+
 
         [HttpGet("obter-pendentes")]
         public async Task <ActionResult<IEnumerable<Tarefa>>> ObterTarefasPendentes()
